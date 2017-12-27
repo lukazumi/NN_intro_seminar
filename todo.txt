@@ -1,0 +1,14 @@
+kyotosunshine is written in keras 1
+https://faroit.github.io/keras-docs/1.2.2/layers/convolutional/#convolution2d
+
+new version is keras 2
+https://keras.io/
+
+
+changes include
+border_mode -> padding, 
+dim_ordering -> data_format 
+...etc
+
+
+I need to update to Keras 2
