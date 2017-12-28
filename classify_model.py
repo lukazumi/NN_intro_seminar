@@ -19,7 +19,7 @@ CROP = True
 
 
 def classify_img(model_path, images_dir=None):
-    face_cascade = cv2.CascadeClassifier("har-cascaades/haarcascade_frontalface_default.xml")
+    face_cascade = cv2.CascadeClassifier("haar-cascades/haarcascade_frontalface_default.xml")
     # graph was trained on integer class names instead of kanji. convert them back with this dictionary.
     classnames_lookup = {}
     dip = os.path.join(model_path, 'class_lookup.txt')
@@ -83,24 +83,12 @@ def classify_img(model_path, images_dir=None):
     print()
     print("-- detailed results --")
 
-    # a list (each img) of list (prob of each class).
     prediction_probabilities = model.predict_proba(X, batch_size=1, verbose=1)
-    for i, probs in enumerate(prediction_probabilities):  # i is img file
-        top_five_classes = []
-        out_string = ""
-        top_five_probs = sorted(probs, reverse=True)[:5]
-        for tfp in top_five_probs:
-            for itr, prob in enumerate(probs):
-                if prob == tfp:
-                    if itr in top_five_classes:  # the case where two classes have exact same prob.
-                        continue
-                    else:
-                        top_five_classes.append(itr)
-                        out_string += "\t" + classnames_lookup[str(itr)]
-                if len(top_five_classes) > 4:
-                    break
+    for i, probs in enumerate(prediction_probabilities):
+        ind = np.argsort(probs)
+        out_string = classnames_lookup[str(ind[-1])].split(",")[0] + ": " + str(probs[ind[-1]]*100) + "%, " + classnames_lookup[str(ind[-2])].split(",")[0] + ": " + str(probs[ind[-2]]*100) + "%"
         # out = os.path.basename(image_list[i]) + out_string
-        out = str(image_list[i]) + out_string
+        out = str(image_list[i]) + "> " +out_string
         print()
         print(out)
 
